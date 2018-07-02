@@ -96,6 +96,7 @@ public class PlayScreen implements Screen
         handleInput(dt);  //check input
 
         player.update(dt);
+        hud.update(dt);
 
         world.step(1/60f, 6, 2);
 
