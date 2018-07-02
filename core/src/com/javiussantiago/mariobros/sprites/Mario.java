@@ -3,14 +3,19 @@ package com.javiussantiago.mariobros.sprites;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.javiussantiago.mariobros.MarioBros;
 import com.javiussantiago.mariobros.screens.PlayScreen;
+
+import java.awt.Rectangle;
 
 public class Mario extends Sprite
 {
@@ -37,18 +42,24 @@ public class Mario extends Sprite
         stateTimer = 0;
         runningRight = true;
 
+        //Set Animations
+        //Temporary variable
         Array<TextureRegion> frames = new Array<TextureRegion>();
+        // For each sprite 1 through 4, add the texture
+        // region at x: i * 16, y: 11, width: 16, height: 16, add it to frames
+        // then initialize the animation with this frames variable before resetting it
         for (int i = 1; i < 4; i++)
             frames.add(new TextureRegion(getTexture(), i * 16, 11, 16, 16));
         marioRun = new Animation<TextureRegion>(0.1f, frames);
+        //resets frames variable
         frames.clear();
 
+        //Same as previous loop. but for 4-6
         for(int i = 4; i < 6; i++)
             frames.add(new TextureRegion(getTexture(), i * 16, 11, 16, 16));
         marioJump = new Animation<TextureRegion>(0.1f, frames);
-        //frames.clear();
 
-
+        //initializes marioStand
         marioStand = new TextureRegion(getTexture(), 1, 11, 16, 16);
 
         defineMario();
@@ -70,6 +81,15 @@ public class Mario extends Sprite
 
         fdef.shape = shape;
         b2body.createFixture(fdef);
+
+        EdgeShape head = new EdgeShape();
+        head.set(new Vector2(-2 / MarioBros.PPM, 6 / MarioBros.PPM), new Vector2(2 / MarioBros.PPM, 5 / MarioBros.PPM));
+        fdef.shape = head;
+        fdef.isSensor = true;
+
+        b2body.createFixture(fdef).setUserData("head");
+
+
     }
 
     public void update(float dt)

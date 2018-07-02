@@ -25,6 +25,7 @@ import com.javiussantiago.mariobros.MarioBros;
 import com.javiussantiago.mariobros.scenes.Hud;
 import com.javiussantiago.mariobros.sprites.Mario;
 import com.javiussantiago.mariobros.tools.B2WorldCreator;
+import com.javiussantiago.mariobros.tools.WorldContactListener;
 
 public class PlayScreen implements Screen
 {
@@ -64,15 +65,17 @@ public class PlayScreen implements Screen
 
         renderer = new OrthogonalTiledMapRenderer(map, 1 / MarioBros.PPM);
 
-        gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
+        gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);   //center?
 
         //Box2s
-        world = new World(new Vector2(0, -10), true);
+        world = new World(new Vector2(0, -10), true);   //gravity, -10 on y axis
         b2dr = new Box2DDebugRenderer();
 
         new B2WorldCreator(world, map);
 
         player = new Mario(world, this);
+
+        world.setContactListener(new WorldContactListener());
 
     }
 
