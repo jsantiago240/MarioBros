@@ -16,6 +16,7 @@ public class Coin extends InteractiveTileObject
     {
         super(world, map, bounds);
         fixture.setUserData(this);
+        setCategoryFilter(MarioBros.COIN_BIT);
     }
 
     @Override
@@ -23,4 +24,5 @@ public class Coin extends InteractiveTileObject
     {
         Gdx.app.log("Coin", "Collision");
     }
+
 }

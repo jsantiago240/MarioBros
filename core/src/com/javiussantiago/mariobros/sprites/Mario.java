@@ -78,6 +78,10 @@ public class Mario extends Sprite
         FixtureDef fdef = new FixtureDef();
         CircleShape shape = new CircleShape();
         shape.setRadius(6 / MarioBros.PPM);
+        fdef.filter.categoryBits = MarioBros.MARIO_BIT;
+        //what mario can collide with
+        //NOTICE, he cant collide with DESTROYED_BIT. When a fixture (brick or coin is destroyed) he cant collide with it
+        fdef.filter.maskBits = MarioBros.DEFAULT_BIT | MarioBros.COIN_BIT | MarioBros.BRICK_BIT;
 
         fdef.shape = shape;
         b2body.createFixture(fdef);
@@ -88,7 +92,6 @@ public class Mario extends Sprite
         fdef.isSensor = true;
 
         b2body.createFixture(fdef).setUserData("head");
-
 
     }
 
