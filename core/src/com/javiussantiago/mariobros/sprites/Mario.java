@@ -9,13 +9,10 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.javiussantiago.mariobros.MarioBros;
 import com.javiussantiago.mariobros.screens.PlayScreen;
-
-import java.awt.Rectangle;
 
 public class Mario extends Sprite
 {
@@ -32,11 +29,11 @@ public class Mario extends Sprite
     private float stateTimer;
     private boolean runningRight;
 
-    public Mario(World world, PlayScreen playScreen)
+    public Mario(PlayScreen playScreen)
     {
         super(playScreen.getAtlas().findRegion("little_mario"));
 
-        this.world = world;
+        world = playScreen.getWorld();
         currentState = State.STANDING;
         previousState = State.STANDING;
         stateTimer = 0;
@@ -81,7 +78,11 @@ public class Mario extends Sprite
         fdef.filter.categoryBits = MarioBros.MARIO_BIT;
         //what mario can collide with
         //NOTICE, he cant collide with DESTROYED_BIT. When a fixture (brick or coin is destroyed) he cant collide with it
-        fdef.filter.maskBits = MarioBros.DEFAULT_BIT | MarioBros.COIN_BIT | MarioBros.BRICK_BIT;
+        fdef.filter.maskBits = MarioBros.GROUND_BIT |
+                MarioBros.COIN_BIT |
+                MarioBros.BRICK_BIT |
+                MarioBros.ENEMY_BIT |
+                MarioBros.OBJECT_BIT;
 
         fdef.shape = shape;
         b2body.createFixture(fdef);

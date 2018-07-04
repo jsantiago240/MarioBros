@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.javiussantiago.mariobros.MarioBros;
 import com.javiussantiago.mariobros.scenes.Hud;
+import com.javiussantiago.mariobros.sprites.Goomba;
 import com.javiussantiago.mariobros.sprites.Mario;
 import com.javiussantiago.mariobros.tools.B2WorldCreator;
 import com.javiussantiago.mariobros.tools.WorldContactListener;
@@ -47,36 +48,35 @@ public class PlayScreen implements Screen
     private Box2DDebugRenderer b2dr;
 
     private Mario player;
+    private Goomba goomba;
 
     private Music music;
 
     public PlayScreen(MarioBros game)
     {
+        //MarioBros is passed
         this.game = game;
-
+        //Texture Atlas from super mario bros
         atlas = new TextureAtlas("Mario_and_Enemies.pack");
-
+        //init game cam and game view port
         gameCam = new OrthographicCamera(); //follows mario
         gamePort = new FitViewport(MarioBros.V_WIDTH / MarioBros.PPM, MarioBros.V_HEIGHT / MarioBros.PPM, gameCam);   //maintains aspect ratios
-
-        //Creates game hud
+        //Initializes game hud
         hud = new Hud(game.batch);
-
-        //map
+        //initializes map loader and sets map
         mapLoader = new TmxMapLoader();
         map = mapLoader.load("level1cleaned.tmx");  //without "live written on world
-
+        //initializes renderer
         renderer = new OrthogonalTiledMapRenderer(map, 1 / MarioBros.PPM);
-
+        //sets game cam
         gameCam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);   //center?
-
         //Box2s
         world = new World(new Vector2(0, -10), true);   //gravity, -10 on y axis
         b2dr = new Box2DDebugRenderer();
 
-        new B2WorldCreator(world, map);
+        new B2WorldCreator(this);
 
-        player = new Mario(world, this);
+        player = new Mario(this);
 
         world.setContactListener(new WorldContactListener());
 
@@ -84,6 +84,8 @@ public class PlayScreen implements Screen
         music.setLooping(true);
         music.setVolume(0.1f);
         music.play();
+
+        goomba = new Goomba(this, .32f, .32f);
     }
 
     public void handleInput(float dt)
@@ -103,6 +105,7 @@ public class PlayScreen implements Screen
         handleInput(dt);  //check input
 
         player.update(dt);
+        goomba.update(dt);
         hud.update(dt);
 
         world.step(1/60f, 6, 2);
@@ -144,6 +147,7 @@ public class PlayScreen implements Screen
         game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.begin();
         player.draw(game.batch);    //mario extends sprite's draw method
+        goomba.draw(game.batch);
         game.batch.end();
 
         //draw hud
@@ -155,6 +159,15 @@ public class PlayScreen implements Screen
     public void resize(int width, int height)
     {
         gamePort.update(width, height);
+    }
+
+    public TiledMap getMap()
+    {
+        return map;
+    }
+    public World getWorld()
+    {
+        return world;
     }
 
     @Override

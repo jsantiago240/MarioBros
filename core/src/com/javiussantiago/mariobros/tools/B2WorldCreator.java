@@ -10,13 +10,17 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.javiussantiago.mariobros.MarioBros;
+import com.javiussantiago.mariobros.screens.PlayScreen;
 import com.javiussantiago.mariobros.sprites.Brick;
 import com.javiussantiago.mariobros.sprites.Coin;
 
 public class B2WorldCreator
 {
-    public B2WorldCreator(World world, TiledMap map)
+    public B2WorldCreator(PlayScreen playScreen)
     {
+        World world = playScreen.getWorld();
+        TiledMap map = playScreen.getMap();
+
         BodyDef bdef = new BodyDef();
         PolygonShape shape = new PolygonShape();
         FixtureDef fdef = new FixtureDef();
@@ -49,6 +53,7 @@ public class B2WorldCreator
 
             shape.setAsBox(rect.getWidth() / 2 / MarioBros.PPM, rect.getHeight() / 2 / MarioBros.PPM);
             fdef.shape = shape;
+            fdef.filter.categoryBits = MarioBros.OBJECT_BIT;
             body.createFixture(fdef);
         }
 
@@ -57,7 +62,7 @@ public class B2WorldCreator
         {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
-            new Brick(world, map, rect);
+            new Brick(playScreen, rect);
         }
 
         //coins
@@ -65,7 +70,7 @@ public class B2WorldCreator
         {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
-            new Coin(world, map, rect);
+            new Coin(playScreen, rect);
         }
     }
 }

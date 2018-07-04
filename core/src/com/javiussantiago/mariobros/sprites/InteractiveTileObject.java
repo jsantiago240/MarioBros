@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.javiussantiago.mariobros.MarioBros;
+import com.javiussantiago.mariobros.screens.PlayScreen;
 
 public abstract class InteractiveTileObject
 {
@@ -22,10 +23,10 @@ public abstract class InteractiveTileObject
     protected Body body;
     protected Fixture fixture;
 
-    public InteractiveTileObject(World world, TiledMap map, Rectangle bounds)
+    public InteractiveTileObject(PlayScreen playScreen, Rectangle bounds)
     {
-        this.world = world;
-        this.map = map;
+        this.world = playScreen.getWorld();
+        this.map = playScreen.getMap();
         this.bounds = bounds;
 
         BodyDef bdef = new BodyDef();
